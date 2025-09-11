@@ -7,6 +7,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 type IngredientSource = {
     id: string;
     pricePerKg: number;
+    retailer: Retailer;
 };
 
 type Ingredient = {
@@ -78,12 +79,15 @@ export default function CookingFormulationApp() {
                 })
                 .catch((err) => console.error("Failed to fetch ingredients:", err));
 
+            // Note: You still need to create the /api/retailers/route.ts endpoint
+            /*
             fetch("/api/retailers")
                 .then((res) => res.json())
                 .then((data: unknown) => {
                     if (Array.isArray(data)) setRetailers(data as Retailer[]);
                 })
                 .catch((err) => console.error("Failed to fetch retailers:", err));
+            */
         }
     }, [isAuthenticated]);
 
@@ -95,10 +99,10 @@ export default function CookingFormulationApp() {
                     <div className="flex-shrink-0 text-2xl font-bold text-gray-800">🍳 Formulation Designer</div>
                     {isAuthenticated && (
                         <div className="flex items-center space-x-4">
-                            {["builder", "sourcing", "settings"].map((p) => (
+                            {(["builder", "sourcing", "settings"] as const).map((p) => (
                                 <button
                                     key={p}
-                                    onClick={() => setPage(p as typeof page)}
+                                    onClick={() => setPage(p)}
                                     className={`px-3 py-2 rounded-md text-sm font-medium ${page === p ? "bg-indigo-600 text-white" : "text-gray-700 hover:bg-gray-100"
                                         }`}
                                 >
@@ -137,21 +141,24 @@ export default function CookingFormulationApp() {
                 });
                 if (result?.error) {
                     setError("Failed to login. Please check your credentials.");
-                } else {
-                    setPage("builder");
                 }
             } else {
-                const response = await fetch("/api/auth/register", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password, userType }),
-                });
+                try {
+                    const response = await fetch("/api/auth/register", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, password, userType }),
+                    });
 
-                if (response.ok) {
-                    await signIn("credentials", { redirect: false, email, password, userType });
-                } else {
-                    const data = (await response.json()) as { message?: string };
-                    setError(data.message || "Registration failed.");
+                    if (response.ok) {
+                        // Automatically sign in after successful registration
+                        await signIn("credentials", { redirect: false, email, password });
+                    } else {
+                        const data = (await response.json()) as { message?: string };
+                        setError(data.message || "Registration failed.");
+                    }
+                } catch (err) {
+                    setError("An unexpected error occurred.");
                 }
             }
         };
@@ -401,11 +408,10 @@ export default function CookingFormulationApp() {
 
     // ==== Settings Page ====
     const SettingsPage = () => {
-        const [userType, setUserType] = useState<"INDIVIDUAL" | "CATERER">(
-            (session?.user as { userType?: "INDIVIDUAL" | "CATERER" })?.userType || "INDIVIDUAL"
-        );
+        const [userType, setUserType] = useState<"INDIVIDUAL" | "CATERER">(session?.user?.userType || "INDIVIDUAL");
 
         const handleSaveChanges = async () => {
+            // This would be a POST request to an API endpoint like /api/user/settings
             console.log("Saving user type:", userType);
             alert("Settings saved!");
         };
@@ -437,21 +443,29 @@ export default function CookingFormulationApp() {
         );
     };
 
-    // ==== App Return ====
+    const renderPage = () => {
+        if (isLoadingAuth) {
+            return <div className="flex justify-center items-center h-screen"><p className="text-lg">Loading session...</p></div>;
+        }
+
+        if (!isAuthenticated) {
+            return <AuthPage />;
+        }
+
+        switch (page) {
+            case 'builder': return <RecipeBuilder />;
+            case 'sourcing': return <SourcingPage />;
+            case 'settings': return <SettingsPage />;
+            default: return <RecipeBuilder />;
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="bg-gray-50 min-h-screen font-sans">
             <Nav />
-            {isLoadingAuth ? (
-                <div className="flex justify-center items-center h-64 text-gray-600">Loading...</div>
-            ) : !isAuthenticated ? (
-                <AuthPage />
-            ) : page === "builder" ? (
-                <RecipeBuilder />
-            ) : page === "sourcing" ? (
-                <SourcingPage />
-            ) : (
-                <SettingsPage />
-            )}
+            <main>
+                {renderPage()}
+            </main>
         </div>
     );
 }
