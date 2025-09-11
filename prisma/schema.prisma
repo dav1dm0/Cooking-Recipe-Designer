@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+// User model for authentication and profile management
+model User {
+id        String   @id @default(cuid())
+email     String   @unique
+password  String
+userType  UserType @default(INDIVIDUAL)
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+recipes   Recipe[]
+}
+
+// Recipe model created by a user
+model Recipe {
+id          String             @id @default(cuid())
+name        String
+user        User               @relation(fields: [userId], references: [id])
+userId      String
+createdAt   DateTime           @default(now())
+updatedAt   DateTime           @updatedAt
+ingredients RecipeIngredient[]
+}
+
+// Ingredient master data
+model Ingredient {
+id              String             @id @default(cuid())
+name            String             @unique
+foodGroup       String
+caloriesPer100g Int
+isVegan         Boolean
+isVegetarian    Boolean
+recipes         RecipeIngredient[]
+sources         IngredientSource[]
+}
+
+// Retailer information
+model Retailer {
+id         String             @id @default(cuid())
+name       String             @unique
+volumeType VolumeType
+website    String
+sources    IngredientSource[]
+}
+
+// --- Join Tables ---
+
+// Joins Recipe and Ingredient, storing the quantity for that specific recipe
+model RecipeIngredient {
+recipeId     String
+ingredientId String
+quantityG    Int // Quantity in grams
+
+recipe     Recipe     @relation(fields: [recipeId], references: [id])
+ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+@@id([recipeId, ingredientId])
+}
+
+// Joins Ingredient and Retailer, storing the price and specific product URL
+model IngredientSource {
+ingredientId String
+retailerId   String
+pricePerKg   Float // Price per 1000 grams
+productUrl   String
+
+ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+retailer   Retailer   @relation(fields: [retailerId], references: [id])
+
+@@id([ingredientId, retailerId])
+}
+
+// --- Enums ---
+
+enum UserType {
+INDIVIDUAL
+CATERER
+}
+
+enum VolumeType {
+LOW
+HIGH
+}
