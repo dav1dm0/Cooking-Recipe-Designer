@@ -208,7 +208,7 @@ export default function CookingFormulationApp() {
                         {authMode === "login" ? "Sign In" : "Register"}
                     </button>
                 </form>
-                <p className="mt-4 text-center text-sm">
+                <p className="mt-4 text-center text-sm text-gray-700 dark:text-gray-400">
                     {authMode === "login" ? "Don't have an account? " : "Already have an account? "}
                     <button
                         onClick={() => {
@@ -301,13 +301,13 @@ export default function CookingFormulationApp() {
                 <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg">
                     <h3 className="text-xl font-semibold mb-4">Current Formulation</h3>
                     <div className="space-y-3 mb-6">
-                        {recipe.length === 0 && <p className="text-gray-500">Add ingredients from the left to get started.</p>}
+                        {recipe.length === 0 && <p className="text-gray-700 dark:text-gray-400">Add ingredients from the left to get started.</p>}
                         {recipe.map(({ ingredient, quantityG }) => (
                             <div
                                 key={ingredient.id}
                                 className="flex items-center justify-between p-3 bg-gray-50 rounded-md"
                             >
-                                <span className="font-medium">{ingredient.name}</span>
+                                <span className="font-medium text-gray-900 dark:text-white">{ingredient.name}</span>
                                 <div className="flex items-center space-x-2">
                                     <input
                                         type="number"
@@ -408,7 +408,9 @@ export default function CookingFormulationApp() {
 
     // ==== Settings Page ====
     const SettingsPage = () => {
-        const [userType, setUserType] = useState<"INDIVIDUAL" | "CATERER">(session?.user?.userType || "INDIVIDUAL");
+        const [userType, setUserType] = useState<"INDIVIDUAL" | "CATERER">(
+            (session?.user?.userType as "INDIVIDUAL" | "CATERER") || "INDIVIDUAL"
+        );
 
         const handleSaveChanges = async () => {
             // This would be a POST request to an API endpoint like /api/user/settings
@@ -422,7 +424,7 @@ export default function CookingFormulationApp() {
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Account Type</label>
-                        <p className="text-xs text-gray-500 mb-2">This helps us tailor suggestions for you.</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">This helps us tailor suggestions for you.</p>
                         <select
                             value={userType}
                             onChange={(e) => setUserType(e.target.value as "INDIVIDUAL" | "CATERER")}
