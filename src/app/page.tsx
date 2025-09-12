@@ -79,7 +79,7 @@ export default function CookingFormulationApp() {
                 })
                 .catch((err) => console.error("Failed to fetch ingredients:", err));
 
-            // Note: You still need to create the /api/retailers/route.ts endpoint
+            // Note: create the /api/retailers/route.ts endpoint
             /*
             fetch("/api/retailers")
                 .then((res) => res.json())
