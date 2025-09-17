@@ -11,9 +11,11 @@ frontend:
         - npx prisma migrate deploy
         - npm run build
   artifacts:
-    baseDirectory: .next
+    baseDirectory: .next/standalone
     files:
       - '**/*'
+      - '../public/**/*'
+      - '../static/**/*'
   cache:
     paths:
       - .next/cache/**/*
