@@ -57,7 +57,9 @@ const authOptions: AuthOptions = {
         signIn: '/', // Direct users to the homepage for login
     }
 };
-
+console.log("NEXTAUTH_SECRET available?", !!process.env.NEXTAUTH_SECRET);
+console.log("NEXTAUTH_URL available?", process.env.NEXTAUTH_URL);
+console.log("DATABASE_URL available?", !!process.env.DATABASE_URL);
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
