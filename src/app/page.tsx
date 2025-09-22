@@ -274,7 +274,7 @@ export default function CookingFormulationApp() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-8">
                 {/* Ingredient List */}
                 <div className="lg:col-span-1 bg-white p-6 rounded-lg shadow-lg">
-                    <h3 className="text-xl font-semibold mb-4">Ingredients</h3>
+                    <h3 className="text-xl text-black font-semibold mb-4">Ingredients</h3>
                     <input
                         type="text"
                         placeholder="Search ingredients..."
@@ -282,7 +282,7 @@ export default function CookingFormulationApp() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full px-3 py-2 border rounded-md mb-4"
                     />
-                    <ul className="space-y-2 max-h-[60vh] overflow-y-auto">
+                    <ul className="space-y-2 text-black max-h-[60vh] overflow-y-auto">
                         {filteredIngredients.map((ing) => (
                             <li key={ing.id} className="flex justify-between items-center p-2 border-b">
                                 <span>{ing.name}</span>
@@ -299,15 +299,15 @@ export default function CookingFormulationApp() {
 
                 {/* Recipe & Totals */}
                 <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg">
-                    <h3 className="text-xl font-semibold mb-4">Current Formulation</h3>
+                    <h3 className="text-xl text-black font-semibold mb-4">Current Recipe</h3>
                     <div className="space-y-3 mb-6">
-                        {recipe.length === 0 && <p className="text-gray-700 dark:text-gray-400">Add ingredients from the left to get started.</p>}
+                        {recipe.length === 0 && <p className="text-blue-500 dark:text-gray-400">Add ingredients from the left to get started.</p>}
                         {recipe.map(({ ingredient, quantityG }) => (
                             <div
                                 key={ingredient.id}
                                 className="flex items-center justify-between p-3 bg-gray-50 rounded-md"
                             >
-                                <span className="font-medium text-gray-900 dark:text-white">{ingredient.name}</span>
+                                <span className="font-medium text-blue-500 dark:text-white">{ingredient.name}</span>
                                 <div className="flex items-center space-x-2">
                                     <input
                                         type="number"
@@ -328,11 +328,11 @@ export default function CookingFormulationApp() {
                     </div>
 
                     <div className="border-t pt-4">
-                        <h4 className="text-lg font-semibold mb-2">Totals</h4>
-                        <div className="space-y-2 text-gray-700">
+                        <h4 className="text-lg text-black font-semibold mb-2">Totals</h4>
+                        <div className="space-y-2 text-blue-700">
                             <div className="flex justify-between items-center">
                                 <span>Estimated Cost:</span>{" "}
-                                <span className="font-bold text-xl text-green-600">${totals.cost.toFixed(2)}</span>
+                                <span className="font-bold text-xl text-green-600">£{totals.cost.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span>Total Calories:</span> <span className="font-bold">{Math.round(totals.calories)} kcal</span>
