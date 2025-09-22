@@ -121,32 +121,39 @@ async function main() {
     });
     console.log('Ingredients seeded...');
     // Link Ingredients to Retailers via IngredientSource
-    await prisma.ingredientSource.createMany({
-        data: [
-            // Plain Flour
-            { retailerId: tesco.id, ingredientId: plainFlour.id, pricePerKg: 0.80, productUrl: '#' },
-            { retailerId: asda.id, ingredientId: plainFlour.id, pricePerKg: 0.75, productUrl: '#' },
-            { retailerId: costco.id, ingredientId: plainFlour.id, pricePerKg: 0.50, productUrl: '#' },
-            { retailerId: booker.id, ingredientId: plainFlour.id, pricePerKg: 0.45, productUrl: '#' },
-            // Caster Sugar
-            { retailerId: tesco.id, ingredientId: casterSugar.id, pricePerKg: 1.50, productUrl: '#' },
-            { retailerId: asda.id, ingredientId: casterSugar.id, pricePerKg: 1.45, productUrl: '#' },
-            { retailerId: booker.id, ingredientId: casterSugar.id, pricePerKg: 1.10, productUrl: '#' },
-            // Eggs
-            { retailerId: tesco.id, ingredientId: freeRangeEggs.id, pricePerKg: 3.00, productUrl: '#' },
-            { retailerId: asda.id, ingredientId: freeRangeEggs.id, pricePerKg: 2.90, productUrl: '#' },
-            // Butter
-            { retailerId: tesco.id, ingredientId: unsaltedButter.id, pricePerKg: 7.00, productUrl: '#' },
-            { retailerId: asda.id, ingredientId: unsaltedButter.id, pricePerKg: 6.95, productUrl: '#' },
-            { retailerId: costco.id, ingredientId: unsaltedButter.id, pricePerKg: 6.50, productUrl: '#' },
-            // Vegan Block
-            { retailerId: tesco.id, ingredientId: veganBlock.id, pricePerKg: 8.00, productUrl: '#' },
-            { retailerId: asda.id, ingredientId: veganBlock.id, pricePerKg: 7.90, productUrl: '#' },
-            // Dark Chocolate
-            { retailerId: tesco.id, ingredientId: darkChocolate.id, pricePerKg: 10.00, productUrl: '#' },
-            { retailerId: booker.id, ingredientId: darkChocolate.id, pricePerKg: 8.50, productUrl: '#' },
-        ],
-    });
+    const ingredientSources = [
+        { retailerId: tesco.id, ingredientId: plainFlour.id, pricePerKg: 0.80, productUrl: '#' },
+        { retailerId: asda.id, ingredientId: plainFlour.id, pricePerKg: 0.75, productUrl: '#' },
+        { retailerId: costco.id, ingredientId: plainFlour.id, pricePerKg: 0.50, productUrl: '#' },
+        { retailerId: booker.id, ingredientId: plainFlour.id, pricePerKg: 0.45, productUrl: '#' },
+        { retailerId: tesco.id, ingredientId: casterSugar.id, pricePerKg: 1.50, productUrl: '#' },
+        { retailerId: asda.id, ingredientId: casterSugar.id, pricePerKg: 1.45, productUrl: '#' },
+        { retailerId: booker.id, ingredientId: casterSugar.id, pricePerKg: 1.10, productUrl: '#' },
+        { retailerId: tesco.id, ingredientId: freeRangeEggs.id, pricePerKg: 3.00, productUrl: '#' },
+        { retailerId: asda.id, ingredientId: freeRangeEggs.id, pricePerKg: 2.90, productUrl: '#' },
+        { retailerId: tesco.id, ingredientId: unsaltedButter.id, pricePerKg: 7.00, productUrl: '#' },
+        { retailerId: asda.id, ingredientId: unsaltedButter.id, pricePerKg: 6.95, productUrl: '#' },
+        { retailerId: costco.id, ingredientId: unsaltedButter.id, pricePerKg: 6.50, productUrl: '#' },
+        { retailerId: tesco.id, ingredientId: veganBlock.id, pricePerKg: 8.00, productUrl: '#' },
+        { retailerId: asda.id, ingredientId: veganBlock.id, pricePerKg: 7.90, productUrl: '#' },
+        { retailerId: tesco.id, ingredientId: darkChocolate.id, pricePerKg: 10.00, productUrl: '#' },
+        { retailerId: booker.id, ingredientId: darkChocolate.id, pricePerKg: 8.50, productUrl: '#' },
+    ];
+
+    for (const source of ingredientSources) {
+        await prisma.ingredientSource.upsert({
+            where: {
+                ingredientId_retailerId: {
+                    ingredientId: source.ingredientId,
+                    retailerId: source.retailerId,
+                }
+            },
+            update: {
+                pricePerKg: source.pricePerKg // Update price in case it changes
+            },
+            create: source
+        });
+    }
     console.log('Linked ingredients to sources...');
 
     console.log('Seeding finished.');
