@@ -6,42 +6,52 @@ async function main() {
     console.log('Start seeding...');
 
     // Create Retailers
-    const tesco = await prisma.retailer.create({
-        data: {
+    const tesco = await prisma.retailer.upsert({
+        where: { name: 'Tesco' },
+        update: {},
+        create: {
             name: 'Tesco',
             website: 'https://www.tesco.com/',
             volumeType: VolumeType.LOW,
         },
     });
 
-    const asda = await prisma.retailer.create({
-        data: {
+    const asda = await prisma.retailer.upsert({
+        where: { name: 'ASDA' },
+        update: {},
+        create: {
             name: 'ASDA',
             website: 'https://www.asda.com/',
             volumeType: VolumeType.LOW,
         },
     });
 
-    const costco = await prisma.retailer.create({
-        data: {
+    const costco = await prisma.retailer.upsert({
+        where: { name: 'Costco Wholesale' },
+        update: {},
+        create: {
             name: 'Costco Wholesale',
             website: 'https://www.costco.co.uk/',
             volumeType: VolumeType.HIGH,
         },
     });
 
-    const booker = await prisma.retailer.create({
-        data: {
+    const booker = await prisma.retailer.upsert({
+        where: { name: 'Booker Wholesale' },
+        update: {},
+        create: {
             name: 'Booker Wholesale',
             website: 'https://www.booker.co.uk/',
             volumeType: VolumeType.HIGH,
         },
     });
-    console.log('Created retailers...');
+    console.log('Retailers seeded...');
 
-    // Create Ingredients
-    const plainFlour = await prisma.ingredient.create({
-        data: {
+    // Create or update Ingredients
+    const plainFlour = await prisma.ingredient.upsert({
+        where: { name: 'Plain Flour' },
+        update: {},
+        create: {
             name: 'Plain Flour',
             foodGroup: 'Grain',
             caloriesPer100g: 364,
@@ -50,8 +60,10 @@ async function main() {
         },
     });
 
-    const casterSugar = await prisma.ingredient.create({
-        data: {
+    const casterSugar = await prisma.ingredient.upsert({
+        where: { name: 'Caster Sugar' },
+        update: {},
+        create: {
             name: 'Caster Sugar',
             foodGroup: 'Sugar',
             caloriesPer100g: 400,
@@ -60,8 +72,10 @@ async function main() {
         },
     });
 
-    const freeRangeEggs = await prisma.ingredient.create({
-        data: {
+    const freeRangeEggs = await prisma.ingredient.upsert({
+        where: { name: 'Free Range Eggs (Medium)' },
+        update: {},
+        create: {
             name: 'Free Range Eggs (Medium)',
             foodGroup: 'Dairy & Eggs',
             caloriesPer100g: 155,
@@ -70,8 +84,10 @@ async function main() {
         },
     });
 
-    const unsaltedButter = await prisma.ingredient.create({
-        data: {
+    const unsaltedButter = await prisma.ingredient.upsert({
+        where: { name: 'Unsalted Butter' },
+        update: {},
+        create: {
             name: 'Unsalted Butter',
             foodGroup: 'Dairy & Eggs',
             caloriesPer100g: 717,
@@ -80,8 +96,10 @@ async function main() {
         },
     });
 
-    const veganBlock = await prisma.ingredient.create({
-        data: {
+    const veganBlock = await prisma.ingredient.upsert({
+        where: { name: 'Vegan Block (Butter Alternative)' },
+        update: {},
+        create: {
             name: 'Vegan Block (Butter Alternative)',
             foodGroup: 'Fat & Oil',
             caloriesPer100g: 720,
@@ -90,8 +108,10 @@ async function main() {
         },
     });
 
-    const darkChocolate = await prisma.ingredient.create({
-        data: {
+    const darkChocolate = await prisma.ingredient.upsert({
+        where: { name: 'Dark Chocolate (70%)' },
+        update: {},
+        create: {
             name: 'Dark Chocolate (70%)',
             foodGroup: 'Confectionery',
             caloriesPer100g: 598,
@@ -99,8 +119,7 @@ async function main() {
             isVegetarian: true,
         },
     });
-    console.log('Created ingredients...');
-
+    console.log('Ingredients seeded...');
     // Link Ingredients to Retailers via IngredientSource
     await prisma.ingredientSource.createMany({
         data: [
