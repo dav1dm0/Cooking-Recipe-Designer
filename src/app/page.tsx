@@ -96,7 +96,7 @@ export default function CookingFormulationApp() {
         <nav className="bg-white shadow-md">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
-                    <div className="flex-shrink-0 text-2xl font-bold text-gray-800">🍳 Formulation Designer</div>
+                    <div className="flex-shrink-0 text-2xl font-bold text-gray-800">🍳 Recipe Builder</div>
                     {isAuthenticated && (
                         <div className="flex items-center space-x-4">
                             {(["builder", "sourcing", "settings"] as const).map((p) => (
