@@ -5,12 +5,18 @@ frontend:
       commands:
         # Use 'npm install' instead of 'npm ci' for better caching and flexibility in CI.
         - npm ci
+        - echo "Temporarily opening DB security group for build..."
+        - aws ec2 authorize-security-group-ingress --group-id $DB_SECURITY_GROUP_ID --protocol tcp --port 5432 --cidr 0.0.0.0/0
     build:
       commands:
         - npx prisma generate
         - npx prisma migrate deploy
         - npm run db:seed
         - npm run build
+  postBuild:
+    commands:
+      - echo "Closing DB security group..."
+      - aws ec2 revoke-security-group-ingress --group-id $DB_SECURITY_GROUP_ID --protocol tcp --port 5432 --cidr 0.0.0.0/0
   artifacts:
     baseDirectory: .next
     files:
@@ -19,4 +25,4 @@ frontend:
   cache:
     paths:
       - .next/cache/**/*
-      - node_modules/**/* # Also cache the node_modules directory
+      - node_modules/**/* 
