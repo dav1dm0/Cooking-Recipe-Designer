@@ -169,8 +169,9 @@ export default function CookingFormulationApp() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {error && <p className="text-red-500 text-sm text-center">{error}</p>}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Email Address</label>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
                         <input
+                            id="email"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -179,8 +180,9 @@ export default function CookingFormulationApp() {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Password</label>
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
                         <input
+                            id="password"
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -190,8 +192,9 @@ export default function CookingFormulationApp() {
                     </div>
                     {authMode === "register" && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">I am a...</label>
+                            <label htmlFor="userType" className="block text-sm font-medium text-gray-700">I am a...</label>
                             <select
+                                id="userType"
                                 value={userType}
                                 onChange={(e) => setUserType(e.target.value as "INDIVIDUAL" | "CATERER")}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
@@ -287,6 +290,7 @@ export default function CookingFormulationApp() {
                             <li key={ing.id} className="flex justify-between items-center p-2 border-b">
                                 <span>{ing.name}</span>
                                 <button
+                                    aria-label={`Add ${ing.name} to recipe`}
                                     onClick={() => addToRecipe(ing)}
                                     className="p-1 rounded-full bg-indigo-500 text-white hover:bg-indigo-600"
                                 >
