@@ -311,13 +311,13 @@ export default function CookingFormulationApp() {
                                 key={ingredient.id}
                                 className="flex items-center justify-between p-3 bg-gray-50 rounded-md"
                             >
-                                <span className="font-medium text-blue-500 dark:text-white">{ingredient.name}</span>
+                                <span className="font-medium text-blue-500">{ingredient.name}</span>
                                 <div className="flex items-center space-x-2">
                                     <input
                                         type="number"
                                         value={quantityG}
                                         onChange={(e) => updateQuantity(ingredient.id, e.target.value)}
-                                        className="w-20 text-center border rounded-md p-1"
+                                        className="w-20 text-center border rounded-md p-1 text-black"
                                     />
                                     <span>g</span>
                                     <button
